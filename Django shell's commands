@@ -1,0 +1,77 @@
+from news_site.models import *
+
+1.
+u1 = User.objects.create_user('Ivan')
+u2 = User.objects.create_user('Dmitriy')
+
+2.
+Author.objects.create(user=u1)
+Author.objects.create(user=u2)
+
+3.
+Category.objects.create(name='IT')
+Category.objects.create(name='Science')
+Category.objects.create(name='Society')
+Category.objects.create(name='Space')
+
+4.
+Post.objects.create(author=Author.objects.get(id=1), categoryType='NW', head='NASA запустило ракету SLS на луну', body='some text about this mission')
+Post.objects.create(author=Author.objects.get(id=2), head='Есть ли жизнь на марсе?', body='some text about this question')
+Post.objects.create(author=Author.objects.get(id=1), head='GPT-4 - приговор программистам?', body='some text about this problem')
+
+5.
+Post.objects.get(id=2).category.add(Category.objects.get(id=4))
+Post.objects.get(id=3).category.add(Category.objects.get(id=2))
+Post.objects.get(id=4).category.add(Category.objects.get(id=1), Category.objects.get(id=3))
+
+6.
+Comment.objects.create(comment_post=Post.objects.get(id=2), comment_user=Author.objects.get(id=1).user, text = "some author's text")
+Comment.objects.create(comment_post=Post.objects.get(id=3), comment_user=Author.objects.get(id=2).user, text = "It's wonderful!")
+Comment.objects.create(comment_post=Post.objects.get(id=4), comment_user=Author.objects.get(id=1).user, text = "LOL")
+Comment.objects.create(comment_post=Post.objects.get(id=4), comment_user=Author.objects.get(id=2).user, text = "I disagree with the statement.")
+
+7.
+Comment.objects.get(id=1).dislike()
+Comment.objects.get(id=1).dislike()
+Comment.objects.get(id=1).dislike()
+Comment.objects.get(id=2).like()
+Comment.objects.get(id=2).like()
+Comment.objects.get(id=3).like()
+Comment.objects.get(id=3).dislike()
+Comment.objects.get(id=4).like()
+Comment.objects.get(id=4).like()
+Comment.objects.get(id=4).like()
+Comment.objects.get(id=4).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=2).like()
+Post.objects.get(id=3).like()
+Post.objects.get(id=4).dislike()
+Post.objects.get(id=4).dislike()
+
+8.
+Author.objects.get(id=1).update_rating()
+Author.objects.get(id=2).update_rating()
+
+9.
+a = Author.objects.order_by('-author_rating')[:1]
+for i in a:
+    i.user.username
+    i.author_rating
+
+10.
+p = Post.objects.order_by('-rating')[:1]
+for i in p:
+    i.time_add.strftime("%B %d, %Y, %H:%M")
+    i.author.user.username
+    i.rating
+    i.head
+    i.preview()
+
+11.
+c = Comment.objects.filter(comment_post=p)
+for i in c:
+    i.time_add.strftime("%B %d, %Y, %H:%M")
+    i.comment_user.username
+    i.rating
+    i.text

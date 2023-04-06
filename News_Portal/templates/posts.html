@@ -1,0 +1,33 @@
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+    <h1>Все посты</h1>
+    <h2>Кол-во: {{ posts|length }}</h2>
+    <hr>
+    {% if posts %}
+        <table>
+            <tr>
+                <td>Тип</td>
+                <td>Заголовок</td>
+                <td>Дата публикации</td>
+                <td>Превью</td>
+            </tr>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.categoryType }}</td>
+                <td>{{ post.head|censor }}</td>
+                <td>{{ post.time_add|date:'d.M.Y' }}</td>
+                <td>{{ post.body|truncatewords:20|censor }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <h2>Постов нет!</h2>
+    {% endif %}
+{% endblock content %}
