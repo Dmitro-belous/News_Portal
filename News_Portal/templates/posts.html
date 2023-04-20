@@ -10,6 +10,9 @@ Posts
     <h1>Все посты</h1>
     <h2>Кол-во: {{ posts|length }}</h2>
     <hr>
+    {% if perms.news_site.add_post %}
+    <a href="{% url 'post_create' %}">Добавить пост</a>
+    {% endif %}
     {% if posts %}
         <table>
             <tr>
@@ -17,6 +20,9 @@ Posts
                 <td>Заголовок</td>
                 <td>Дата публикации</td>
                 <td>Превью</td>
+                {% if perms.news_site.change_post or perms.news_site.delete_post %}
+                <td>Действия</td>
+                {% endif %}
             </tr>
             {% for post in posts %}
             <tr>
@@ -24,6 +30,14 @@ Posts
                 <td>{{ post.head|censor }}</td>
                 <td>{{ post.time_add|date:'d.M.Y' }}</td>
                 <td>{{ post.body|truncatewords:20|censor }}</td>
+                <td>
+                    {% if perms.news_site.change_post %}
+                    <a href="{% url 'post_update' pk=post.id %}">Изменить</a>
+                    {% endif %}
+                    {% if perms.news_site.delete_post %}
+                    <a href="{% url 'post_delete' post.id %}">Удалить</a>
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>

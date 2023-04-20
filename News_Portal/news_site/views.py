@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -57,7 +58,9 @@ class SearchPost(ListView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news_site.add_post',)
+    raise_exception = True
     # Указываем разработанную форму
     form_class = PostForm
     # модель постов
@@ -67,14 +70,18 @@ class PostCreate(CreateView):
 
 
 # Добавляем представление для изменения поста.
-class PostUpdate(UpdateView):
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news_site.change_post',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
 # Представление удаляющее пост.
-class PostDelete(DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news_site.delete_post',)
+    raise_exception = True
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
