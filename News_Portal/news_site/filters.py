@@ -12,6 +12,7 @@ class PostFilter(FilterSet):
             attrs={'type': 'datetime-local'},
         ),
     )
+
     class Meta:
         # В Meta классе мы должны указать Django модель,
         # в которой будем фильтровать записи.

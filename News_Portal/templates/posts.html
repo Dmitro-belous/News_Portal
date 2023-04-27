@@ -18,6 +18,7 @@ Posts
             <tr>
                 <td>Тип</td>
                 <td>Заголовок</td>
+                <td>Категории</td>
                 <td>Дата публикации</td>
                 <td>Превью</td>
                 {% if perms.news_site.change_post or perms.news_site.delete_post %}
@@ -27,7 +28,14 @@ Posts
             {% for post in posts %}
             <tr>
                 <td>{{ post.categoryType }}</td>
-                <td>{{ post.head|censor }}</td>
+                <td>
+                    <a href="{% url 'post_detail' post.id %}">{{ post.head|censor }}</a>
+                </td>
+                <td>
+                    {% for category in post.category.all %}
+                    <a href="{% url 'category_list' category.id %}">{{ category }}</a>
+                    {% endfor %}
+                </td>
                 <td>{{ post.time_add|date:'d.M.Y' }}</td>
                 <td>{{ post.body|truncatewords:20|censor }}</td>
                 <td>

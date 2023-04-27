@@ -1,12 +1,16 @@
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import (
     ListView, DetailView, CreateView, UpdateView, DeleteView
 )
 
 from .filters import PostFilter
 from .forms import PostForm
-from .models import Post
+from .models import Post, Category
 
 
 class PostList(ListView):
@@ -85,3 +89,51 @@ class PostDelete(PermissionRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
+
+
+class CategoryListView(PostList):
+    template_name = 'category_list.html'
+    context_object_name = 'category_post_list'
+
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(category=self.category).order_by('-time_add')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.category.subscribers.all()
+        context['category'] = self.category
+        return context
+
+
+@login_required
+@csrf_protect
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.add(user)
+
+    message = f'Вы успешно подписались на рассылку новостной категории '
+
+    return render(
+        request, 'subscribe.html', {
+            'category': category, 'message': message, 'link': f'{settings.SITE_URL}/news/categories/{pk}'
+        }
+    )
+
+
+@login_required
+@csrf_protect
+def unsubscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribers.filter(username=user).delete()
+
+    message = f'Вы успешно отписались от рассылки новостной категории '
+
+    return render(
+        request, 'unsubscribe.html', {
+            'category': category, 'message': message, 'link': f'{settings.SITE_URL}/news/categories/{pk}'
+        }
+    )

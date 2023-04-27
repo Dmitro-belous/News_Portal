@@ -2,27 +2,23 @@
 
 {% load custom_filters %}
 
-{% load custom_tags %}
-
 {% block title %}
 Posts
 {% endblock title %}
 
 {% block content %}
-    <h1>Все посты</h1>
-    <h2>Кол-во: {{ posts|length }}</h2>
-    {# Добавляем форму, которая объединяет набор полей, которые будут отправляться в запросе #}
-    <form action="" method="get">
-        {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
-        {{ filterset.form.as_p }}
-        {# Добавим кнопку отправки данных формы #}
-        <input type="submit" value="Найти" />
-    </form>
+    {% if is_not_subscriber %}
+    <p class="text-center"><a href="{% url 'subscribe' category.id %}" class="btn btn-secondary btn-sm">Подписаться</a></p>
+    {% else %}
+    <p class="text-center"><a href="{% url 'unsubscribe' category.id %}" class="btn btn-secondary btn-sm">Отписаться</a></p>
+    {% endif %}
+    <h1>Все посты категории "{{ category }}"</h1>
+    <h2>Кол-во: {{ category_post_list|length }}</h2>
     <hr>
     {% if perms.news_site.add_post %}
     <a href="{% url 'post_create' %}">Добавить пост</a>
     {% endif %}
-    {% if posts %}
+    {% if category_post_list %}
         <table>
             <tr>
                 <td>Тип</td>
@@ -34,7 +30,7 @@ Posts
                 <td>Действия</td>
                 {% endif %}
             </tr>
-            {% for post in posts %}
+            {% for post in category_post_list %}
             <tr>
                 <td>{{ post.categoryType }}</td>
                 <td>
@@ -63,10 +59,10 @@ Posts
     {% endif %}
     {# Информация о предыдущих страницах #}
     {% if page_obj.has_previous %}
-        <a href="?{% url_replace page=1 %}">1</a>
+        <a href="?page=1">1</a>
         {% if page_obj.previous_page_number != 1 %}
             ...
-            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
         {% endif %}
     {% endif %}
 
@@ -75,10 +71,10 @@ Posts
 
     {# Информация о следующих страницах #}
     {% if page_obj.has_next %}
-        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
         {% if paginator.num_pages != page_obj.next_page_number %}
             ...
-            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
         {% endif %}
     {% endif %}
 {% endblock content %}
