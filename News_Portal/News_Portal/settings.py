@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2tudc$a02m)gcn=5cv&y=g4@#yv-=$z252st-kk#4ys*lw1+0a'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -169,3 +169,9 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 APSCHEDULER_DATETIME_FORMAT = 'N j, Y, f:s a'
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 SITE_URL = 'http://127.0.0.1:8000'
+
+CELERY_BROKER_URL = f'redis://{os.getenv("REDIS_LOGIN")}:{os.getenv("REDIS_PASSWORD")}@redis-10299.c299.asia-northeast1-1.gce.cloud.redislabs.com:10299'
+CELERY_RESULT_BACKEND = f'redis://{os.getenv("REDIS_LOGIN")}:{os.getenv("REDIS_PASSWORD")}@redis-10299.c299.asia-northeast1-1.gce.cloud.redislabs.com:10299'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

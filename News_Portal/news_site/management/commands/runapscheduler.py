@@ -18,48 +18,7 @@ from news_site.models import Post, Category
 logger = logging.getLogger(__name__)
 
 
-def my_job():
 
-    for category in Category.objects.all():
-
-        mailing_list = list(
-            category.subscribers.all(
-            ).values_list(
-                'username',
-                'first_name',
-                'email',
-                'categories'
-            )
-        )
-
-        posts_list = list(
-            category.post_set.filter(
-                time_add__gt=timezone.now() - timedelta(days=7)
-            ))
-
-        if len(mailing_list) > 0 and len(posts_list) > 0:
-            for user, first_name, email, category_name in mailing_list:
-                if not first_name:
-                    first_name = user
-
-                html_content = render_to_string(
-                    'weekly_post.html',
-                    {
-                        'name': first_name,
-                        'category': category,
-                        'posts': posts_list,
-                        'link': settings.SITE_URL
-                    }
-                )
-
-                message = EmailMultiAlternatives(
-                    subject=f'Все посты за последнюю неделю в категории"{category}"',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    to=[email]
-
-                )
-                message.attach_alternative(html_content, 'text/html')
-                message.send()
 
 
 # The `close_old_connections` decorator ensures that database connections,
