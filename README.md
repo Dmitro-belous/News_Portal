@@ -66,7 +66,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]]
 
 News_Portal is a dynamic news website built on the Django framework and using materials from Skillfactory. It offers users a platform to explore a diverse range of categories and publish their own news articles, creating a vibrant community of readers and writers.
 
