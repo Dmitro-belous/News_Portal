@@ -189,7 +189,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@dmitrobelous](https://twitter.com/dmitrobelous) - dimon20_20@mail.ru
+Dmitry Prokopov - [@dmitrobelous](https://twitter.com/dmitrobelous) - dimon20_20@mail.ru
 
 Project Link: [https://github.com/Dmitro-belous/News_Portal](https://github.com/Dmitro-belous/News_Portal)
 
